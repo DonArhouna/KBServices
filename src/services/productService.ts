@@ -1,0 +1,183 @@
+import { Product as PrismaProduct, Category as PrismaCategory } from '@prisma/client';
+import { uploadImage, deleteImage, extractFilenameFromUrl } from './imageService';
+
+// Conversion du type de la base de données au type de l'application
+export const mapProductFromDB = (product: PrismaProduct & { category?: PrismaCategory }): Product => ({
+  id: product.id,
+  name: product.name,
+  description: product.description || '',
+  price: Number(product.price),
+  image: product.imageUrl || '',
+  category: product.categoryId || '',
+  categoryName: product.category?.name || '',
+  stock_quantity: product.stockQuantity || 0,
+});
+
+// Type pour l'interface utilisateur
+export type Product = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  category: string;
+  categoryName?: string;
+  stock_quantity?: number;
+};
+
+// URL de base de l'API
+const API_BASE_URL = 'http://localhost:3001/api';
+
+// Récupérer tous les produits
+export async function getAllProducts(): Promise<Product[]> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/products`);
+    if (!response.ok) {
+      throw new Error('Erreur lors de la récupération des produits');
+    }
+    const products = await response.json();
+    return products.map(mapProductFromDB);
+  } catch (error) {
+    console.error('Erreur inattendue:', error);
+    return [];
+  }
+}
+
+// Récupérer les produits par catégorie
+export async function getProductsByCategory(categoryId: string): Promise<Product[]> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/products?category=${categoryId}`);
+    if (!response.ok) {
+      throw new Error('Erreur lors de la récupération des produits');
+    }
+    const products = await response.json();
+    return products.map(mapProductFromDB);
+  } catch (error) {
+    console.error('Erreur inattendue:', error);
+    return [];
+  }
+}
+
+// Ajouter ou mettre à jour un produit
+export async function saveProduct(product: Product, imageFile?: File): Promise<Product | null> {
+  try {
+    let imageUrl = product.image;
+
+    // Si une nouvelle image est fournie, l'uploader d'abord
+    if (imageFile) {
+      imageUrl = await uploadImage(imageFile);
+    }
+
+    const productData = {
+      ...product,
+      image: imageUrl,
+    };
+
+    const response = await fetch(`${API_BASE_URL}/products`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(productData),
+    });
+
+    if (!response.ok) {
+      throw new Error('Erreur lors de la sauvegarde du produit');
+    }
+
+    const savedProduct = await response.json();
+    return mapProductFromDB(savedProduct);
+  } catch (error) {
+    console.error('Erreur inattendue:', error);
+    return null;
+  }
+}
+
+// Supprimer un produit
+export async function deleteProduct(productId: string): Promise<boolean> {
+  try {
+    // D'abord récupérer le produit pour obtenir l'URL de l'image
+    const products = await getAllProducts();
+    const product = products.find(p => p.id === productId);
+
+    const response = await fetch(`${API_BASE_URL}/products/${productId}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error('Erreur lors de la suppression du produit');
+    }
+
+    // Supprimer l'image associée si elle existe
+    if (product?.image) {
+      const filename = extractFilenameFromUrl(product.image);
+      if (filename) {
+        try {
+          await deleteImage(filename);
+        } catch (imageError) {
+          console.warn('Erreur lors de la suppression de l\'image associée:', imageError);
+          // Ne pas échouer la suppression du produit si la suppression de l'image échoue
+        }
+      }
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Erreur inattendue:', error);
+    return false;
+  }
+}
+
+// Récupérer toutes les catégories
+export async function getAllCategories(): Promise<PrismaCategory[]> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/categories`);
+    if (!response.ok) {
+      throw new Error('Erreur lors de la récupération des catégories');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Erreur inattendue:', error);
+    return [];
+  }
+}
+
+// Ajouter ou mettre à jour une catégorie
+export async function saveCategory(category: { id?: string; name: string; slug: string }): Promise<PrismaCategory | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/categories`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(category),
+    });
+
+    if (!response.ok) {
+      throw new Error('Erreur lors de la sauvegarde de la catégorie');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Erreur inattendue:', error);
+    return null;
+  }
+}
+
+// Supprimer une catégorie
+export async function deleteCategory(categoryId: string): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/categories/${categoryId}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error('Erreur lors de la suppression de la catégorie');
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Erreur inattendue:', error);
+    return false;
+  }
+}

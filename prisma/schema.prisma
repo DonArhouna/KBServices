@@ -1,0 +1,191 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  name      String
+  slug      String   @unique
+  products  Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id              String    @id @default(uuid()) @db.Uuid
+  price           Decimal   @db.Decimal(65, 30)
+  categoryId      String?   @db.Uuid @map("category_id")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at")
+  name            String
+  description     String?
+  imageUrl        String?   @map("image_url")
+  stockQuantity   Int?      @default(0) @map("stock_quantity")
+  minStockLevel   Int?      @default(5) @map("min_stock_level")
+  stockStatus     String?   @default("in_stock") @map("stock_status")
+  stockMovements  StockMovement[]
+  stockAlerts     StockAlert[]
+  category        Category? @relation(fields: [categoryId], references: [id])
+
+  @@map("products")
+}
+
+model StockMovement {
+  id           String   @id @default(uuid()) @db.Uuid
+  productId    String   @db.Uuid @map("product_id")
+  movementType String   @map("movement_type")
+  quantity     Int
+  reason       String?
+  referenceNumber String? @map("reference_number")
+  notes        String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  createdBy    String?  @default("admin") @map("created_by")
+  product      Product  @relation(fields: [productId], references: [id])
+
+  @@map("stock_movements")
+}
+
+model StockAlert {
+  id               String   @id @default(uuid()) @db.Uuid
+  productId        String   @db.Uuid @map("product_id")
+  alertType        String   @map("alert_type")
+  currentQuantity  Int      @map("current_quantity")
+  thresholdQuantity Int     @map("threshold_quantity")
+  isResolved       Boolean? @default(false) @map("is_resolved")
+  createdAt        DateTime @default(now()) @map("created_at")
+  resolvedAt       DateTime? @map("resolved_at")
+  product          Product  @relation(fields: [productId], references: [id])
+
+  @@map("stock_alerts")
+}
+
+model Order {
+  id             String      @id @default(uuid()) @db.Uuid
+  totalAmount    Decimal     @db.Decimal(65, 30) @map("total_amount")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @default(now()) @updatedAt @map("updated_at")
+  status         String      @default("pending")
+  orderNumber    String      @unique @map("order_number")
+  customerName   String      @map("customer_name")
+  customerEmail  String      @map("customer_email")
+  customerPhone  String      @map("customer_phone")
+  customerAddress String     @map("customer_address")
+  deliveryMode   String      @map("delivery_mode")
+  notes          String?
+  orderItems     OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id          String   @id @default(uuid()) @db.Uuid
+  orderId     String   @db.Uuid @map("order_id")
+  quantity    Int
+  unitPrice   Decimal  @db.Decimal(65, 30) @map("unit_price")
+  subtotal    Decimal  @db.Decimal(65, 30)
+  productName String   @map("product_name")
+  createdAt   DateTime @default(now()) @map("created_at")
+  order       Order    @relation(fields: [orderId], references: [id])
+
+  @@map("order_items")
+}
+
+model SiteContent {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  section   String
+  field     String
+  value     String?
+
+  @@unique([section, field])
+  @@map("site_content")
+}
+
+model Invoice {
+  id              String   @id @default(uuid()) @db.Uuid
+  invoiceNumber   String   @unique @map("invoice_number")
+  customerName    String   @map("customer_name")
+  customerEmail   String   @map("customer_email")
+  customerPhone   String?  @map("customer_phone")
+  customerAddress String?  @map("customer_address")
+  customerCompany String?  @map("customer_company")
+  totalAmount     Decimal  @db.Decimal(65, 30) @map("total_amount")
+  status          String   @default("draft")
+  dueDate         DateTime @map("due_date")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at")
+  notes           String?
+  termsConditions String?  @map("terms_conditions")
+  invoiceItems    InvoiceItem[]
+
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id          String   @id @default(uuid()) @db.Uuid
+  invoiceId   String   @db.Uuid @map("invoice_id")
+  description String
+  quantity    Int
+  unitPrice   Decimal  @db.Decimal(65, 30) @map("unit_price")
+  subtotal    Decimal  @db.Decimal(65, 30)
+  createdAt   DateTime @default(now()) @map("created_at")
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id])
+
+  @@map("invoice_items")
+}
+
+model Quote {
+  id              String   @id @default(uuid()) @db.Uuid
+  quoteNumber     String   @unique @map("quote_number")
+  customerName    String   @map("customer_name")
+  customerEmail   String   @map("customer_email")
+  customerPhone   String?  @map("customer_phone")
+  customerAddress String?  @map("customer_address")
+  customerCompany String?  @map("customer_company")
+  status          String   @default("draft")
+  totalAmount     Decimal  @db.Decimal(65, 30) @map("total_amount")
+  validityDate    DateTime? @map("validity_date")
+  notes           String?
+  termsConditions String?  @map("terms_conditions")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at")
+  quoteItems      QuoteItem[]
+
+  @@map("quotes")
+}
+
+model QuoteItem {
+  id          String   @id @default(uuid()) @db.Uuid
+  quoteId     String   @db.Uuid @map("quote_id")
+  serviceId   String?  @db.Uuid @map("service_id")
+  serviceName String   @map("service_name")
+  description String?
+  quantity    Int
+  unitPrice   Decimal  @db.Decimal(65, 30) @map("unit_price")
+  subtotal    Decimal  @db.Decimal(65, 30)
+  createdAt   DateTime @default(now()) @map("created_at")
+  quote       Quote    @relation(fields: [quoteId], references: [id])
+
+  @@map("quote_items")
+}
+
+model Service {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  description String?
+  unitPrice   Decimal  @db.Decimal(65, 30) @map("unit_price")
+  unit        String   @default("service")
+  category    String?
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("services")
+}
