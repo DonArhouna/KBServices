@@ -1,73 +1,232 @@
-# Welcome to your Lovable project
+# KB&S - Plateforme E-commerce Agroalimentaire Sénégalaise
 
-## Project info
+## 🌟 À propos du projet
 
-**URL**: https://lovable.dev/projects/e299da88-0994-4b9f-bcb9-3fa2cea3fbde
+KB&S est une plateforme e-commerce moderne développée pour une entreprise sénégalaise spécialisée dans la transformation de produits agroalimentaires 100% naturels. L'application offre une expérience d'achat complète avec un panneau d'administration avancé pour la gestion des opérations commerciales.
 
-## How can I edit this code?
+## 🚀 Fonctionnalités principales
 
-There are several ways of editing your application.
+### 🛒 Boutique en ligne
+- **Catalogue de produits** : Affichage des produits avec images, descriptions et prix
+- **Système de panier** : Gestion du panier d'achat avec calcul automatique des totaux
+- **Processus de commande** : Formulaire de commande complet avec informations client
+- **Catégorisation** : Organisation des produits par catégories
 
-**Use Lovable**
+### 👨‍💼 Panneau d'administration
+- **Gestion des produits** : Ajout, modification, suppression des produits
+- **Gestion des catégories** : Organisation hiérarchique des produits
+- **Gestion des commandes** : Suivi et traitement des commandes clients
+- **Gestion des devis** : Création et gestion des devis personnalisés
+- **Gestion des factures** : Génération et suivi des factures
+- **Gestion des stocks** : Suivi des niveaux de stock et alertes automatiques
+- **Gestion du contenu** : Modification du contenu du site web
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/e299da88-0994-4b9f-bcb9-3fa2cea3fbde) and start prompting.
+### 📊 Fonctionnalités avancées
+- **Génération de PDF** : Factures et devis exportables en PDF
+- **Intégration WhatsApp** : Envoi automatique de messages WhatsApp
+- **Service d'email** : Notifications automatiques par email
+- **Système de stockage** : Gestion des images et fichiers
+- **Authentification admin** : Accès sécurisé au panneau d'administration
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🛠️ Technologies utilisées
 
-**Use your preferred IDE**
+### Frontend
+- **React 18** : Bibliothèque JavaScript pour l'interface utilisateur
+- **TypeScript** : Typage statique pour JavaScript
+- **Vite** : Outil de build rapide et moderne
+- **Tailwind CSS** : Framework CSS utilitaire
+- **shadcn/ui** : Composants UI réutilisables
+- **React Router** : Routage côté client
+- **React Query** : Gestion des requêtes API
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Backend & Base de données
+- **Supabase** : Backend-as-a-Service (Base de données, Authentification, Storage)
+- **Prisma** : ORM pour la base de données PostgreSQL
+- **Node.js** : Environnement d'exécution JavaScript côté serveur
+- **Express.js** : Framework web pour Node.js
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Outils de développement
+- **ESLint** : Linting du code JavaScript/TypeScript
+- **PostCSS** : Outil de transformation CSS
+- **Autoprefixer** : Ajout automatique des préfixes CSS
+- **TypeScript Compiler** : Compilation TypeScript
 
-Follow these steps:
+## 📁 Structure du projet
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+KBS/
+├── src/
+│   ├── components/          # Composants React réutilisables
+│   │   ├── ui/             # Composants UI de base (shadcn/ui)
+│   │   └── admin/          # Composants du panneau d'administration
+│   ├── pages/              # Pages de l'application
+│   ├── services/           # Services API et logique métier
+│   ├── hooks/              # Hooks React personnalisés
+│   ├── context/            # Contextes React (panier, etc.)
+│   ├── lib/                # Utilitaires et configurations
+│   ├── data/               # Données statiques
+│   └── integrations/       # Intégrations externes (Supabase)
+├── prisma/                 # Schéma et migrations Prisma
+├── supabase/               # Configuration et fonctions Supabase
+├── public/                 # Assets statiques
+└── server/                 # Serveur Express.js
 ```
 
-**Edit a file directly in GitHub**
+## 🗄️ Modèle de données
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Le projet utilise Prisma avec PostgreSQL et comprend les entités suivantes :
 
-**Use GitHub Codespaces**
+- **Categories** : Catégories de produits
+- **Products** : Produits avec gestion des stocks
+- **StockMovements** : Historique des mouvements de stock
+- **StockAlerts** : Alertes de niveau de stock
+- **Orders** : Commandes clients
+- **OrderItems** : Articles des commandes
+- **Invoices** : Factures
+- **InvoiceItems** : Articles des factures
+- **Quotes** : Devis
+- **QuoteItems** : Articles des devis
+- **Services** : Services pour les devis
+- **SiteContent** : Contenu dynamique du site
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🚀 Installation et configuration
 
-## What technologies are used for this project?
+### Prérequis
+- Node.js (version 18 ou supérieure)
+- npm ou yarn
+- Base de données PostgreSQL (via Supabase)
 
-This project is built with:
+### Étapes d'installation
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+1. **Cloner le repository**
+   ```bash
+   git clone https://github.com/DonArhouna/KBServices.git
+   cd KBServices
+   ```
 
-## How can I deploy this project?
+2. **Installer les dépendances**
+   ```bash
+   npm install
+   ```
 
-Simply open [Lovable](https://lovable.dev/projects/e299da88-0994-4b9f-bcb9-3fa2cea3fbde) and click on Share -> Publish.
+3. **Configuration de l'environnement**
+   - Copier le fichier `.env.example` vers `.env`
+   - Configurer les variables d'environnement :
+     ```env
+     DATABASE_URL="postgresql://..."
+     SUPABASE_URL="..."
+     SUPABASE_ANON_KEY="..."
+     ```
 
-## Can I connect a custom domain to my Lovable project?
+4. **Configuration de la base de données**
+   ```bash
+   # Générer le client Prisma
+   npm run db:generate
 
-Yes, you can!
+   # Appliquer les migrations
+   npm run db:push
+   ```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+5. **Démarrer l'application**
+   ```bash
+   # Mode développement (frontend + serveur)
+   npm run dev:full
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+   # Ou séparément :
+   npm run server    # Serveur backend
+   npm run dev       # Frontend
+   ```
+
+## 📜 Scripts disponibles
+
+- `npm run dev` : Démarre le serveur de développement Vite
+- `npm run dev:full` : Démarre simultanément le serveur et le frontend
+- `npm run server` : Démarre le serveur Express.js
+- `npm run build` : Construit l'application pour la production
+- `npm run preview` : Prévisualise la version de production
+- `npm run lint` : Vérifie le code avec ESLint
+- `npm run db:generate` : Génère le client Prisma
+- `npm run db:push` : Applique le schéma Prisma à la base de données
+- `npm run db:migrate` : Crée et applique une migration
+- `npm run db:studio` : Ouvre Prisma Studio
+
+## 🔧 Configuration
+
+### Variables d'environnement
+Créer un fichier `.env` à la racine avec :
+
+```env
+# Base de données
+DATABASE_URL="postgresql://username:password@localhost:5432/kbs_db"
+
+# Supabase
+SUPABASE_URL="https://your-project.supabase.co"
+SUPABASE_ANON_KEY="your-anon-key"
+
+# Autres configurations
+NODE_ENV="development"
+```
+
+### Configuration Supabase
+1. Créer un projet sur [Supabase](https://supabase.com)
+2. Configurer la base de données PostgreSQL
+3. Déployer les fonctions Edge (dans le dossier `supabase/functions/`)
+4. Configurer les variables d'environnement
+
+## 🌐 Déploiement
+
+### Via Lovable (recommandé)
+1. Ouvrir [Lovable](https://lovable.dev/projects/e299da88-0994-4b9f-bcb9-3fa2cea3fbde)
+2. Cliquer sur "Share" → "Publish"
+3. Suivre les instructions pour connecter un domaine personnalisé
+
+### Déploiement manuel
+1. Construire l'application : `npm run build`
+2. Déployer le dossier `dist/` sur votre serveur
+3. Configurer le serveur pour servir les fichiers statiques
+4. Configurer les variables d'environnement en production
+
+## 👥 Utilisation
+
+### Accès au panneau d'administration
+- URL : `/admin`
+- Mot de passe par défaut : `kbs2024admin`
+- ⚠️ **Important** : Changer le mot de passe en production
+
+### Gestion des produits
+1. Se connecter au panneau d'administration
+2. Aller dans l'onglet "Produits"
+3. Ajouter/modifier/supprimer des produits
+4. Gérer les catégories et les niveaux de stock
+
+### Gestion des commandes
+1. Les commandes arrivent automatiquement depuis le site
+2. Traiter les commandes dans l'onglet "Commandes"
+3. Générer des factures depuis les commandes validées
+
+## 🤝 Contribution
+
+1. Fork le projet
+2. Créer une branche pour votre fonctionnalité (`git checkout -b feature/AmazingFeature`)
+3. Commit vos changements (`git commit -m 'Add some AmazingFeature'`)
+4. Push vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrir une Pull Request
+
+## 📝 Licence
+
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+
+## 📞 Support
+
+Pour toute question ou support technique :
+- Email : support@kbs.sn
+- Téléphone : +221 XX XXX XX XX
+- WhatsApp : +221 XX XXX XX XX
+
+## 🏢 À propos de KB&S
+
+KB&S est une entreprise sénégalaise spécialisée dans la transformation de produits agroalimentaires naturels. Notre mission est de promouvoir les produits locaux de qualité supérieure tout en offrant une expérience d'achat moderne et conviviale.
+
+---
+
+Développé avec ❤️ pour le Sénégal 🇸🇳
