@@ -157,7 +157,7 @@ const KBSChatbot = () => {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-8 right-6 h-14 w-14 rounded-full bg-kbs-green hover:bg-kbs-green/90 shadow-lg z-50"
+        className="fixed bottom-20 right-6 h-14 w-14 rounded-full bg-kbs-green hover:bg-kbs-green/90 shadow-lg z-50"
       >
         <MessageCircle className="h-6 w-6" />
       </Button>
@@ -165,7 +165,7 @@ const KBSChatbot = () => {
   }
 
   return (
-    <Card className="fixed bottom-8 right-6 w-80 h-96 shadow-xl z-50 bg-white">
+    <Card className="fixed bottom-20 right-6 w-80 h-96 shadow-xl z-50 bg-white">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-2">
@@ -231,18 +231,18 @@ const KBSChatbot = () => {
         </div>
         
         <div className="p-4 border-t bg-white">
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <Input
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Posez votre question..."
-              className="flex-1"
+              className="flex-1 min-w-0"
             />
             <Button
               onClick={handleSendMessage}
               size="sm"
-              className="bg-kbs-green hover:bg-kbs-green/90"
+              className="bg-kbs-green hover:bg-kbs-green/90 flex-shrink-0 px-3 py-2"
               disabled={!inputMessage.trim()}
             >
               <Send className="h-4 w-4" />
