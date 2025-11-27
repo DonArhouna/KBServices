@@ -4,6 +4,15 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageCircle, Send, X, Bot, User } from "lucide-react";
 import { toast } from "sonner";
+import {
+  getChatbotData,
+  generateProductResponse,
+  generateCategoryResponse,
+  generatePriceResponse,
+  getAvailableCategories,
+  getProductCount,
+  ChatbotData
+} from "@/services/chatbotService";
 
 interface Message {
   id: string;
@@ -13,26 +22,35 @@ interface Message {
 }
 
 const BOT_RESPONSES = [
-  { keywords: ["produit", "menu", "que vendez-vous"], text: "Chez KB&S, nous proposons une variété de produits délicieux : snacks, boissons, plats préparés et bien plus encore. Vous pouvez consulter notre catalogue complet sur la page 'Produits' de notre site." },
+  { keywords: ["produit", "menu", "que vendez-vous", "catalogue"], text: "Chez KB&S, nous proposons des produits authentiques du Sénégal : miel pur, poudre de bouye, beurre de karité, huile de palme rouge, thiakry, pâte d'arachide, et bien plus encore. Vous pouvez consulter notre catalogue complet sur la page 'Produits' de notre site." },
+  { keywords: ["miel"], text: "Notre miel pur est 100% naturel, récolté dans les forêts du Sénégal. Un produit de qualité exceptionnelle à 5000 FCFA. Consultez notre page 'Produits' pour le commander." },
+  { keywords: ["bouye", "baobab"], text: "Notre poudre de bouye (pain de singe) est riche en vitamines et minéraux, parfaite pour vos boissons et desserts. Prix : 2500 FCFA. Disponible sur notre page 'Produits'." },
+  { keywords: ["karité", "beurre"], text: "Notre beurre de karité pur est idéal pour la cuisine et les soins corporels. Un produit naturel à 3500 FCFA. Consultez notre page 'Produits' pour plus de détails." },
+  { keywords: ["thiakry"], text: "Nous proposons du thiakry traditionnel à la banane et à la patate douce, des spécialités authentiques à 2000 FCFA chacune. Découvrez-les sur notre page 'Produits'." },
+  { keywords: ["arachide", "pâte"], text: "Notre pâte d'arachide naturelle sans additifs est parfaite pour vos sauces traditionnelles. Prix : 1800 FCFA. Disponible sur notre page 'Produits'." },
+  { keywords: ["huile", "palme"], text: "Notre huile de palme rouge traditionnelle est riche en vitamine E et caroténoïdes. Un produit authentique à 4000 FCFA. Consultez notre page 'Produits'." },
   { keywords: ["livraison", "livrer", "délai"], text: "Nous proposons deux options : livraison à domicile ou retrait en magasin. Les délais de livraison varient selon votre localisation. Vous pouvez préciser vos préférences lors de votre commande." },
-  { keywords: ["paiement", "payer", "prix"], text: "Nous acceptons plusieurs modes de paiement : WhatsApp (recommandé), carte bancaire, Wave, et Orange Money. Vous pouvez choisir votre mode de paiement préféré lors de la finalisation de votre commande." },
+  { keywords: ["paiement", "payer"], text: "Nous acceptons plusieurs modes de paiement : WhatsApp (recommandé), carte bancaire, Wave, et Orange Money. Vous pouvez choisir votre mode de paiement préféré lors de la finalisation de votre commande." },
   { keywords: ["commande", "commander", "acheter"], text: "Pour passer une commande, ajoutez vos produits au panier depuis notre page 'Produits', puis cliquez sur 'Passer une commande'. Vous pourrez ensuite choisir votre mode de livraison et de paiement." },
-  // Note: "adresse" is a keyword for both contact and localisation. The first one will be matched.
+  { keywords: ["stock", "disponible", "disponibilité"], text: "La disponibilité de nos produits est mise à jour en temps réel sur notre page 'Produits'. Vous pouvez vérifier le stock avant de passer commande." },
+  { keywords: ["naturel", "bio", "qualité"], text: "Tous nos produits sont 100% naturels et sans additifs artificiels. Nous sélectionnons avec soin chaque produit pour vous garantir une qualité exceptionnelle." },
   { keywords: ["contact", "téléphone", "adresse"], text: "Vous pouvez nous contacter via notre page 'Contact' où vous trouverez nos coordonnées complètes, ou directement via WhatsApp au +221 77 029 98 21." },
   { keywords: ["horaire", "ouvert", "heure"], text: "Nos horaires d'ouverture et informations de disponibilité sont disponibles sur notre page 'Contact'. N'hésitez pas à nous contacter pour des informations spécifiques." },
   { keywords: ["où", "localisation"], text: "Vous pouvez trouver notre localisation exacte sur la page 'Localisation' de notre site, avec une carte interactive pour nous trouver facilement." },
-  { keywords: ["qui êtes-vous", "à propos", "histoire"], text: "KB&S est votre partenaire de confiance pour des produits de qualité. Découvrez notre histoire et nos valeurs sur la page 'À propos' de notre site." },
+  { keywords: ["qui êtes-vous", "à propos", "histoire"], text: "KB&S est votre partenaire de confiance pour des produits authentiques du Sénégal. Nous sommes spécialisés dans la transformation de produits agroalimentaires 100% naturels. Découvrez notre histoire et nos valeurs sur la page 'À propos' de notre site." },
   { keywords: ["bonjour", "salut", "bonsoir"], text: "Bonjour ! Ravi de vous accueillir chez KB&S. Comment puis-je vous aider aujourd'hui ?" },
-  { keywords: ["merci", "merci beaucoup"], text: "Je vous en prie ! N'hésitez pas si vous avez d'autres questions concernant KB&S." }
+  { keywords: ["merci", "merci beaucoup"], text: "Je vous en prie ! N'hésitez pas si vous avez d'autres questions concernant KB&S." },
+  { keywords: ["aide", "help", "assistance"], text: "Je peux vous aider avec nos produits, les commandes, la livraison, les paiements, et toutes vos questions sur KB&S. Que souhaitez-vous savoir ?" }
 ];
 
-const DEFAULT_RESPONSE = "Je suis spécialisé dans les informations concernant KB&S (produits, commandes, livraison, paiement). Pouvez-vous reformuler votre question en rapport avec nos services ? Ou contactez-nous directement pour une assistance personnalisée.";
+const DEFAULT_RESPONSE = "Je suis spécialisé dans les informations concernant KB&S et nos produits authentiques du Sénégal. Vous pouvez me demander des informations sur nos produits (miel, bouye, karité, thiakry, etc.), les commandes, la livraison, ou les paiements. Pouvez-vous reformuler votre question ? Ou contactez-nous directement au +221 77 029 98 21 pour une assistance personnalisée.";
 
 const KBSChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [chatbotData, setChatbotData] = useState<ChatbotData | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -45,6 +63,13 @@ const KBSChatbot = () => {
 
   useEffect(() => {
     if (isOpen && messages.length === 0) {
+      // Charger les données du chatbot
+      getChatbotData().then(data => {
+        setChatbotData(data);
+      }).catch(error => {
+        console.error('Erreur lors du chargement des données du chatbot:', error);
+      });
+
       // Message d'accueil
       const welcomeMessage: Message = {
         id: "welcome",
@@ -59,11 +84,38 @@ const KBSChatbot = () => {
   const getKBSResponse = (userMessage: string): string => {
     const lowerCaseMessage = userMessage.toLowerCase();
 
+    // Si on a les données du site, essayer de générer des réponses dynamiques
+    if (chatbotData) {
+      // Recherche de produits spécifiques
+      const productResponse = generateProductResponse(chatbotData.products, lowerCaseMessage);
+      if (productResponse) return productResponse;
+
+      // Recherche de catégories
+      const categoryResponse = generateCategoryResponse(chatbotData.categories, chatbotData.products, lowerCaseMessage);
+      if (categoryResponse) return categoryResponse;
+
+      // Recherche de prix
+      const priceResponse = generatePriceResponse(chatbotData.products, lowerCaseMessage);
+      if (priceResponse) return priceResponse;
+
+      // Questions sur les catégories disponibles
+      if (lowerCaseMessage.includes('catégorie') || lowerCaseMessage.includes('type') || lowerCaseMessage.includes('gamme')) {
+        return getAvailableCategories(chatbotData.categories);
+      }
+
+      // Questions sur le nombre de produits
+      if (lowerCaseMessage.includes('combien') && (lowerCaseMessage.includes('produit') || lowerCaseMessage.includes('article'))) {
+        return getProductCount(chatbotData.products);
+      }
+    }
+
+    // Réponses statiques existantes
     for (const response of BOT_RESPONSES) {
       if (response.keywords.some(keyword => lowerCaseMessage.includes(keyword))) {
         return response.text;
       }
     }
+    
     return DEFAULT_RESPONSE;
   };
 
