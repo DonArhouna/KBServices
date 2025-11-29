@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # optional postgres service - use if you don't want to use the host Postgres
+  postgres:
+    image: postgres:16
+    restart: always
+    environment:
+      - POSTGRES_USER=kbs_user
+      - POSTGRES_PASSWORD=StrongPassword
+      - POSTGRES_DB=kbs_prod
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - kbnet
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backend
+    restart: always
+    env_file:
+      - ../.env
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgres  # comment out if you use a host db
+    volumes:
+      - ../ImagesSite:/app/ImagesSite
+    networks:
+      - kbnet
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - kbnet
+
+volumes:
+  db_data:
+
+networks:
+  kbnet:
+    driver: bridge

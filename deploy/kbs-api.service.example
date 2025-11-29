@@ -1,0 +1,19 @@
+[Unit]
+Description=KB&S Node API
+After=network.target postgresql.service
+Wants=network.target
+
+[Service]
+Type=simple
+User=rhone
+WorkingDirectory=/home/rhone/KBServices/KBS
+# Use EnvironmentFile to store environment variables
+EnvironmentFile=/home/rhone/KBServices/KBS/.env
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node server/index.js
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target
