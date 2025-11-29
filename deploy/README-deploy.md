@@ -36,6 +36,29 @@ How to use:
    ./scripts/deploy.sh
    ```
 
+### Déploiement Docker sur VPS (script isolé)
+
+1. Créez `.env.prod` sur le VPS en copiant l'exemple et en mettant les credentials réels :
+   ```bash
+   cp .env.prod.example .env.prod
+   nano .env.prod # éditez les valeurs
+   ```
+
+2. Si vous utilisez un conteneur Postgres préexistant (`postgres_db`), vous pouvez attacher ce conteneur au réseau `kbnet` pour permettre au backend de s'y connecter. Exemple :
+   ```bash
+   # exécuter depuis le répertoire 'KBS'
+   docker network create kbnet || true
+   docker network connect kbnet postgres_db || true
+   ```
+
+3. Déployer en production (script remote):
+   ```bash
+   chmod +x deploy/remote-deploy.sh
+   ./deploy/remote-deploy.sh dev --use-existing-db postgres_db
+   ```
+
+Le script `remote-deploy.sh` : met à jour le dépôt, vérifie `.env.prod`, attache le conteneur postgres si demandé, puis appelle `docker/deploy-docker.sh`.
+
 4. If you’re using a domain, install certbot and set up HTTPS:
    ```bash
    sudo apt install certbot python3-certbot-nginx
