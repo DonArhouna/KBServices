@@ -25,8 +25,7 @@ services:
       - ../.env
     ports:
       - "3001:3001"
-    depends_on:
-      - postgres  # comment out if you use a host db
+    # depends_on: [postgres]  # removed to allow using an external Postgres container (postgres_db)
     volumes:
       - ../ImagesSite:/app/ImagesSite
     networks:
