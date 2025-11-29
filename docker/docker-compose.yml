@@ -5,6 +5,8 @@ services:
   postgres:
     image: postgres:16
     restart: always
+    profiles:
+      - localdb
     environment:
       - POSTGRES_USER=kbs_user
       - POSTGRES_PASSWORD=StrongPassword
