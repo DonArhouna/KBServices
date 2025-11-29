@@ -2,4 +2,15 @@ version: '3.8'
 
 services:
   backend:
-    depends_on: []
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backend
+    restart: always
+    env_file:
+      - ../.env
+    ports:
+      - "3001:3001"
+    volumes:
+      - ../ImagesSite:/app/ImagesSite
+    networks:
+      - kbnet
