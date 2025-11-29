@@ -10,6 +10,9 @@ services:
       - ../.env
     ports:
       - "3001:3001"
+    # Explicitly override depends_on (empty) so the merged compose
+    # config doesn't keep a dependency on `postgres` from other files
+    depends_on: []
     volumes:
       - ../ImagesSite:/app/ImagesSite
     networks:
