@@ -38,6 +38,20 @@ cd "$ROOT_DIR"
 # Ensure correct branch
 git fetch origin
 git checkout "$BRANCH"
+# Ensure we don't overwrite local config (.env) — allow local edits only for .env
+LOCAL_CHANGES=$(git status --porcelain)
+if [ -n "$LOCAL_CHANGES" ]; then
+  # If local changes excluding .env, request user to commit or stash
+  local_non_env_changes=$(echo "$LOCAL_CHANGES" | grep -v '\.env' || true)
+  if [ -n "$local_non_env_changes" ]; then
+    echo "You have local changes (other than .env). Please commit or stash them before pulling. Changes:\n$local_non_env_changes"
+    exit 1
+  else
+    echo "Local changes only in .env; proceeding without overwriting it"
+  fi
+fi
+
+# Pull updates from remote
 git pull origin "$BRANCH"
 
 # Check .env.prod exists

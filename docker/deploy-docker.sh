@@ -62,9 +62,17 @@ if [ -n "$ATTACH_EXISTING_DB" ]; then
   echo "Connected $ATTACH_EXISTING_DB to kbnet"
 fi
 if [ -n "$COMPOSE_PROFILES" ]; then
-  docker compose -f docker-compose.yml $COMPOSE_PROFILES --env-file "$ENVFILE" up --build -d
+  if [ -n "$ATTACH_EXISTING_DB" ]; then
+    docker compose -f docker-compose.yml -f docker-compose.no-postgres.yml $COMPOSE_PROFILES --env-file "$ENVFILE" up --build -d
+  else
+    docker compose -f docker-compose.yml $COMPOSE_PROFILES --env-file "$ENVFILE" up --build -d
+  fi
 else
-  docker compose -f docker-compose.yml --env-file "$ENVFILE" up --build -d
+  if [ -n "$ATTACH_EXISTING_DB" ]; then
+    docker compose -f docker-compose.yml -f docker-compose.no-postgres.yml --env-file "$ENVFILE" up --build -d
+  else
+    docker compose -f docker-compose.yml --env-file "$ENVFILE" up --build -d
+  fi
 fi
 
 echo "Deployment complete. Tail logs to debug: docker compose -f docker-compose.yml logs -f backend"
