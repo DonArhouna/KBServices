@@ -62,9 +62,12 @@ fi
 # Use the docker deployment helper
 cd "$ROOT_DIR/docker"
 if [ "$USE_EXISTING_DB" = "true" ]; then
-  ./deploy-docker.sh prod --attach-existing-db "$EXISTING_DB_CONTAINER"
+  # Ensure the deploy helper is executable (and fallback to bash if not)
+  chmod +x ./deploy-docker.sh || true
+  bash ./deploy-docker.sh prod --attach-existing-db "$EXISTING_DB_CONTAINER"
 else
-  ./deploy-docker.sh prod
+  chmod +x ./deploy-docker.sh || true
+  bash ./deploy-docker.sh prod
 fi
 
 # Done
