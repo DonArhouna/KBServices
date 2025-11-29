@@ -77,3 +77,32 @@ Le script `remote-deploy.sh` : met à jour le dépôt, vérifie `.env.prod`, att
    ```
 
 If you want, I can commit the helper files and push them to your `dev` branch.
+
+---
+
+### CI/CD via GitHub Actions - Pré-requis pour déploiement automatique
+
+Pour faire du CI/CD (automatique sur push vers `dev`) qui build et déploie sur ton VPS, fais :
+
+1. Génère une clé SSH sur ton poste si nécessaire :
+```bash
+ssh-keygen -t ed25519 -C "kbservices-deploy" -f ~/.ssh/kbservices_deploy
+```
+
+2. Ajoute la clé publique sur le serveur VPS dans `~/.ssh/authorized_keys` pour l'utilisateur `rhone`.
+```bash
+ssh-copy-id -i ~/.ssh/kbservices_deploy.pub rhone@57.129.115.47
+```
+
+3. Ajoute la clé privée comme Secret GitHub (`VPS_SSH_KEY`) sous Settings > Secrets/Actions du repo `DonArhouna/KBServices`.
+4. Ajoute d’autres secrets :
+   - `VPS_HOST` : 57.129.115.47
+   - `VPS_PORT` : 22
+   - `VPS_USER` : rhone
+   - (Optionnel) `POSTGRES_CONTAINER` : postgres_db
+
+5. La workflow GitHub Actions (.github/workflows/ci-deploy.yml) déclenchera la build et se connectera au VPS pour exécuter `deploy/remote-deploy.sh`.
+
+6. Tu peux ajuster les scripts pour exécuter des operations pré/post déploiement en modifiant `deploy/remote-deploy.sh`.
+
+---
