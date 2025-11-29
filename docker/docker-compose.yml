@@ -1,5 +1,4 @@
-version: '3.8'
-
+  
 services:
   # optional postgres service - use if you don't want to use the host Postgres
   postgres:
