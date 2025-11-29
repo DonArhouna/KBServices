@@ -14,13 +14,24 @@ if [ "${2:-}" = "--use-existing-db" ] && [ -n "${3:-}" ]; then
   EXISTING_DB_CONTAINER="$3"
 fi
 
-ROOT_DIR="$HOME/KBServices/KBS"
+# Detect repository root: allow two possible layouts
+if [ -d "$HOME/KBServices/KBS" ]; then
+  ROOT_DIR="$HOME/KBServices/KBS"
+else
+  ROOT_DIR="$HOME/KBServices"
+fi
 REPO_URL="https://github.com/DonArhouna/KBServices.git"
 
 # Clone or update repository
 if [ ! -d "$ROOT_DIR" ]; then
-  echo "Cloning repo into $ROOT_DIR"
+  echo "Cloning repo into $HOME/KBServices"
   git clone "$REPO_URL" "$HOME/KBServices"
+  # if the repo contains KBS as a subdir, set ROOT_DIR accordingly
+  if [ -d "$HOME/KBServices/KBS" ]; then
+    ROOT_DIR="$HOME/KBServices/KBS"
+  else
+    ROOT_DIR="$HOME/KBServices"
+  fi
 fi
 
 cd "$ROOT_DIR"
@@ -40,12 +51,12 @@ fi
 # If using existing DB container, ensure it is attached to the network
 if [ "$USE_EXISTING_DB" = "true" ]; then
   # Ensure we are in the docker folder
-  cd "${ROOT_DIR}/docker"
+  cd "${ROOT_DIR}/docker" || true
   echo "Connecting existing Postgres container $EXISTING_DB_CONTAINER to network kbnet"
   docker network create kbnet || true
   docker network connect kbnet "$EXISTING_DB_CONTAINER" || true
   echo "Connected $EXISTING_DB_CONTAINER to kbnet"
-  cd "$ROOT_DIR"
+  cd "$ROOT_DIR" || true
 fi
 
 # Use the docker deployment helper
