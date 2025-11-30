@@ -27,7 +27,12 @@ export default defineConfig(({ mode }) => ({
     },
   },
   optimizeDeps: {
-    exclude: ['pg']
+    exclude: ['pg', '@prisma/client']
+  },
+  build: {
+    rollupOptions: {
+      external: ['@prisma/client']
+    }
   },
   define: {
     global: 'globalThis',
