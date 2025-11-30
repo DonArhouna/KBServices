@@ -21,11 +21,17 @@ export default defineConfig(({ mode }) => ({
     mode === 'development' &&
     componentTagger(),
     {
-      name: 'prisma-stub',
+      name: 'prisma-blocker',
       resolveId(id) {
-        if (id.includes('prisma/client') || id.includes('.prisma/client')) {
-          console.log('Intercepting Prisma import:', id);
+        if (id && (id.includes('prisma') || id.includes('.prisma'))) {
+          console.log('🚫 Blocking Prisma import:', id);
           return path.resolve(__dirname, 'src/lib/prisma-stub.js');
+        }
+      },
+      load(id) {
+        if (id && (id.includes('prisma') || id.includes('.prisma'))) {
+          console.log('🚫 Blocking Prisma load:', id);
+          return 'export default {}; export const PrismaClient = class {};';
         }
       }
     }
@@ -48,5 +54,7 @@ export default defineConfig(({ mode }) => ({
   },
   define: {
     global: 'globalThis',
+    'import.meta.env.PRISMA_DISABLED': 'true',
+    '__PRISMA_CLIENT__': '{}'
   }
 }));
