@@ -1,0 +1,39 @@
+# Backend simple sans Prisma pour l'instant
+FROM node:20-alpine
+WORKDIR /app
+
+# Installer les dépendances de base
+RUN apk add --no-cache netcat-openbsd
+
+# Copier package.json et installer les dépendances
+COPY package.json package-lock.json ./
+RUN npm ci --production
+
+# Copier le serveur
+COPY server ./server
+COPY ImagesSite ./ImagesSite
+
+# Créer un serveur simple sans Prisma
+RUN echo 'const express = require("express");\
+const cors = require("cors");\
+const app = express();\
+app.use(cors());\
+app.use(express.json());\
+app.use("/ImagesSite", express.static("ImagesSite"));\
+app.get("/api/health/tables", (req, res) => {\
+  res.json({ status: "ok", message: "Backend running without database" });\
+});\
+app.get("/api/products", (req, res) => {\
+  res.json([]);\
+});\
+app.get("/api/categories", (req, res) => {\
+  res.json([]);\
+});\
+app.listen(3001, "0.0.0.0", () => {\
+  console.log("Backend running on port 3001");\
+});' > server/simple.js
+
+ENV NODE_ENV=production
+EXPOSE 3001
+
+CMD ["node", "server/simple.js"]
