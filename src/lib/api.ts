@@ -30,12 +30,12 @@ export async function checkTableExists(tableName: string): Promise<boolean> {
 }
 
 // Fonction pour vérifier la configuration de la base de données
-export const isPrismaConfigured = (): boolean => {
+export const isDatabaseConfigured = (): boolean => {
   return true;
 };
 
 // Fonction pour vérifier si les tables existent via l'API
-export async function checkPrismaTablesExist(): Promise<boolean> {
+export async function checkDatabaseTablesExist(): Promise<boolean> {
   try {
     const health = await api.checkHealth();
     console.log('=== VÉRIFICATION DES TABLES VIA API ===');

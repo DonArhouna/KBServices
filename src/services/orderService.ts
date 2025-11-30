@@ -156,7 +156,7 @@ export const updateOrderStatus = async (orderId: string, newStatus: string): Pro
 };
 
 // Fonction helper pour gérer les mouvements de stock
-// Note: Cette fonction utilise Prisma côté client, ce qui n'est pas recommandé.
+// Note: Cette fonction utilise la base de données côté client, ce qui n'est pas recommandé.
 // Elle devrait être déplacée côté serveur si nécessaire.
 const handleStockMovementsForStatusChange = async (
   oldStatus: string,
@@ -165,7 +165,7 @@ const handleStockMovementsForStatusChange = async (
   orderNumber: string
 ) => {
   try {
-    // Cette fonction est actuellement désactivée car elle utilise Prisma côté client
+    // Cette fonction est actuellement désactivée car elle utilise la base de données côté client
     // Elle devrait être implémentée côté serveur si nécessaire
     console.log('Gestion des mouvements de stock désactivée côté client');
   } catch (error) {

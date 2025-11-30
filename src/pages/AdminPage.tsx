@@ -13,7 +13,7 @@ import StockAdmin from "@/components/admin/StockAdmin";
 import { QuotesAdmin } from "@/components/admin/QuotesAdmin";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { isPrismaConfigured, checkPrismaTablesExist } from "@/lib/api";
+import { isDatabaseConfigured, checkDatabaseTablesExist } from "@/lib/api";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -24,7 +24,7 @@ const AdminPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [prismaConfigured, setPrismaConfigured] = useState(false);
+  const [databaseConfigured, setDatabaseConfigured] = useState(false);
   const [tablesExist, setTablesExist] = useState(false);
   const navigate = useNavigate();
 
@@ -35,35 +35,35 @@ const AdminPage = () => {
       setIsAuthenticated(true);
     }
     
-    // Vérifier la configuration Prisma
-    checkPrismaConfiguration();
+    // Vérifier la configuration de la base de données
+    checkDatabaseConfiguration();
   }, []);
 
-  // Vérification de la configuration Prisma
-  const checkPrismaConfiguration = async () => {
+  // Vérification de la configuration de la base de données
+  const checkDatabaseConfiguration = async () => {
     // D'abord vérifier si les variables d'environnement sont configurées
-    const configured = isPrismaConfigured();
-    setPrismaConfigured(configured);
+    const configured = isDatabaseConfigured();
+    setDatabaseConfigured(configured);
 
     if (!configured) {
-      toast.error("Configuration Prisma manquante. Veuillez configurer la variable d'environnement DATABASE_URL.");
+      toast.error("Configuration de base de données manquante. Veuillez configurer la variable d'environnement DATABASE_URL.");
       return;
     }
 
     try {
       // Tester si les tables existent
-      const tablesExistResult = await checkPrismaTablesExist();
+      const tablesExistResult = await checkDatabaseTablesExist();
 
       if (!tablesExistResult) {
-        console.error('Les tables nécessaires n\'existent pas dans la base de données Prisma.');
+        console.error('Les tables nécessaires n\'existent pas dans la base de données.');
         setTablesExist(false);
       } else {
         setTablesExist(true);
       }
 
     } catch (error) {
-      console.error('Erreur lors de la vérification de la configuration Prisma:', error);
-      setPrismaConfigured(false);
+      console.error('Erreur lors de la vérification de la configuration de la base de données:', error);
+      setDatabaseConfigured(false);
     }
   };
 
@@ -145,10 +145,10 @@ const AdminPage = () => {
           </div>
         ) : (
           <>
-            {!prismaConfigured && (
+            {!databaseConfigured && (
               <Alert variant="destructive" className="mb-8">
                 <AlertCircle className="h-6 w-6" />
-                <AlertTitle>Configuration Prisma requise</AlertTitle>
+                <AlertTitle>Configuration de base de données requise</AlertTitle>
                 <AlertDescription>
                   <p>
                     La variable d'environnement DATABASE_URL est manquante. Veuillez suivre ces étapes pour configurer votre projet :
@@ -162,7 +162,7 @@ const AdminPage = () => {
               </Alert>
             )}
 
-            {prismaConfigured && !tablesExist && (
+            {databaseConfigured && !tablesExist && (
               <Alert variant="destructive" className="mb-8">
                 <AlertCircle className="h-6 w-6" />
                 <AlertTitle>Tables de base de données requises</AlertTitle>
@@ -180,7 +180,7 @@ const AdminPage = () => {
                     <li><strong>site_content</strong> - Pour le contenu du site</li>
                   </ul>
                   <p className="mt-2">
-                    Les tables ont été créées automatiquement via Prisma. Si vous voyez cette erreur, vérifiez la connexion à votre base de données Neon.
+                    Les tables ont été créées automatiquement. Si vous voyez cette erreur, vérifiez la connexion à votre base de données Neon.
                   </p>
                 </AlertDescription>
               </Alert>

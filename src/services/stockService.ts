@@ -86,13 +86,13 @@ export const createStockMovement = async (movement: Omit<StockMovement, 'id' | '
 
 // Récupérer toutes les alertes de stock
 export const getStockAlerts = async (): Promise<StockAlert[]> => {
-  // TODO: Implement with Prisma API when needed
+  // TODO: Implement with database API when needed
   return [];
 };
 
 // Marquer une alerte comme résolue
 export const resolveStockAlert = async (alertId: string): Promise<boolean> => {
-  // TODO: Implement with Prisma API when needed
+  // TODO: Implement with database API when needed
   return true;
 };
 

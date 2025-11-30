@@ -1,4 +1,4 @@
-// Supabase retiré: on bascule sur l'API Node/Prisma
+// Supabase retiré: on bascule sur l'API Node/Express
 // import { supabase, SiteContentDB, checkTableExists, isPostgrestError } from '@/lib/supabase';
 // import { isLocalDevelopment } from '@/lib/supabase-local';
 import { uploadImage, deleteImage, extractFilenameFromUrl } from './imageService';
