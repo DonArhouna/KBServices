@@ -75,4 +75,31 @@ else
   fi
 fi
 
+# Ensure backend/frontend are attached to the external kbnet network after compose up
+echo "Ensuring compose-created containers are attached to kbnet (idempotent)"
+BACKEND_CID=$(docker compose -f docker-compose.yml -f docker-compose.no-postgres.yml --env-file "$ENVFILE" ps -q backend || true)
+FRONTEND_CID=$(docker compose -f docker-compose.yml -f docker-compose.no-postgres.yml --env-file "$ENVFILE" ps -q frontend || true)
+if [ -n "$BACKEND_CID" ]; then
+  docker network connect kbnet "$BACKEND_CID" || true
+fi
+if [ -n "$FRONTEND_CID" ]; then
+  docker network connect kbnet "$FRONTEND_CID" || true
+fi
+
+# Simple smoke test: wait for API to respond and return success if healthy
+echo "Waiting for backend API to respond on http://127.0.0.1:3001/api/health/tables ..."
+for i in {1..10}; do
+  if curl -sSf http://127.0.0.1:3001/api/health/tables >/dev/null 2>&1; then
+    echo "Health check passed"
+    break
+  fi
+  echo "Waiting for API... ($i/10)"
+  sleep 2
+done
+if ! curl -sSf http://127.0.0.1:3001/api/health/tables >/dev/null 2>&1; then
+  echo "Health check FAILED: backend is not responding. Check logs"
+  docker compose -f docker-compose.yml -f docker-compose.no-postgres.yml --env-file "$ENVFILE" logs backend --tail 200
+  exit 1
+fi
+
 echo "Deployment complete. Tail logs to debug: docker compose -f docker-compose.yml logs -f backend"

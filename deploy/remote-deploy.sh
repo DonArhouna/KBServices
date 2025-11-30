@@ -84,5 +84,22 @@ else
   bash ./deploy-docker.sh prod
 fi
 
+# Post-deploy: wait for API to be healthy, fail if not
+echo "Checking API health at http://127.0.0.1:3001/api/health/tables"
+for i in {1..10}; do
+  if curl -sSf http://127.0.0.1:3001/api/health/tables >/dev/null 2>&1; then
+    echo "Remote deploy smoke test passed"
+    break
+  fi
+  echo "Waiting for API to become healthy... ($i/10)"
+  sleep 3
+done
+if ! curl -sSf http://127.0.0.1:3001/api/health/tables >/dev/null 2>&1; then
+  echo "Remote smoke test failed: API did not respond"
+  # Print logs for debugging
+  docker compose -f docker/docker-compose.yml -f docker/docker-compose.no-postgres.yml --env-file ../.env logs backend --tail 200 || true
+  exit 1
+fi
+
 # Done
 echo "Deployment finished. Check running containers: docker compose -f docker/docker-compose.yml ps"
