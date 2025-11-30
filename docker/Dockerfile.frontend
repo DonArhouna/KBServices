@@ -6,7 +6,10 @@ WORKDIR /app
 
 # Install dependencies
 COPY package.json package-lock.json ./
-RUN npm ci
+# Remove any Prisma references from package files
+RUN sed -i '/@prisma/d' package.json || true
+RUN sed -i '/prisma/d' package.json || true
+RUN npm ci --production
 
 # Copy frontend files only
 COPY src ./src
