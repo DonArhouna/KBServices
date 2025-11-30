@@ -20,6 +20,15 @@ export default defineConfig(({ mode }) => ({
     react(),
     mode === 'development' &&
     componentTagger(),
+    {
+      name: 'prisma-stub',
+      resolveId(id) {
+        if (id.includes('prisma/client') || id.includes('.prisma/client')) {
+          console.log('Intercepting Prisma import:', id);
+          return path.resolve(__dirname, 'src/lib/prisma-stub.js');
+        }
+      }
+    }
   ].filter(Boolean),
   resolve: {
     alias: {
@@ -34,7 +43,7 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     rollupOptions: {
-      external: ['@prisma/client', '.prisma/client', '.prisma/client/index-browser']
+      // Pas d'external pour permettre le remplacement par le stub
     }
   },
   define: {
