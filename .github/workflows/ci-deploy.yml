@@ -32,6 +32,8 @@ jobs:
     name: Deploy to VPS
     needs: build
     runs-on: ubuntu-latest
+    env:
+      POSTGRES_CONTAINER: ${{ secrets.POSTGRES_CONTAINER }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
