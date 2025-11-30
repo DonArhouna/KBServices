@@ -16,3 +16,8 @@ services:
       - ../ImagesSite:/app/ImagesSite
     networks:
       - kbnet
+
+networks:
+  kbnet:
+    external:
+      name: kbnet

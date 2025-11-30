@@ -47,4 +47,5 @@ volumes:
 
 networks:
   kbnet:
-    driver: bridge
+    external:
+      name: kbnet
