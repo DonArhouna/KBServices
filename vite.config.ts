@@ -15,6 +15,10 @@ export default defineConfig(({ mode }) => ({
         secure: false,
       },
     },
+    middlewareMode: false,
+    fs: {
+      allow: ['..', '.prisma']
+    }
   },
   plugins: [
     react(),
