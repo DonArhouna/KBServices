@@ -16,6 +16,12 @@ services:
       - ../ImagesSite:/app/ImagesSite
     networks:
       - kbnet
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3001/api/health/tables || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
 networks:
   kbnet:
