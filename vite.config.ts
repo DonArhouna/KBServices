@@ -25,15 +25,16 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
       '@prisma/client': path.resolve(__dirname, 'src/lib/prisma-stub.js'),
-      '.prisma/client': path.resolve(__dirname, 'src/lib/prisma-stub.js')
+      '.prisma/client': path.resolve(__dirname, 'src/lib/prisma-stub.js'),
+      '.prisma/client/index-browser': path.resolve(__dirname, 'src/lib/prisma-stub.js')
     },
   },
   optimizeDeps: {
-    exclude: ['pg', '@prisma/client', '.prisma/client']
+    exclude: ['pg', '@prisma/client', '.prisma/client', '.prisma/client/index-browser']
   },
   build: {
     rollupOptions: {
-      external: ['@prisma/client', '.prisma/client']
+      external: ['@prisma/client', '.prisma/client', '.prisma/client/index-browser']
     }
   },
   define: {
