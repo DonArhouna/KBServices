@@ -75,7 +75,12 @@ jobs:
             # Check container status and logs for debugging
             echo "=== Container Status ==="
             docker ps
+            echo "=== Docker Images ==="
+            docker images
             echo "=== Frontend Logs ==="
-            docker logs $(docker ps -q --filter "name=frontend") --tail 50 || true
+            docker logs $(docker ps -q --filter "name=frontend") --tail 100 || true
             echo "=== Backend Logs ==="
-            docker logs $(docker ps -q --filter "name=backend") --tail 50 || true
+            docker logs $(docker ps -q --filter "name=backend") --tail 100 || true
+            echo "=== Test site accessibility ==="
+            curl -I http://localhost || true
+            echo "=== Deployment completed ==="
