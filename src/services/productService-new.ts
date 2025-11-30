@@ -1,4 +1,20 @@
-import { Product as PrismaProduct, Category as PrismaCategory } from '@prisma/client';
+// Types locaux pour remplacer Prisma
+type PrismaProduct = {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  imageUrl: string | null;
+  categoryId: string | null;
+  stockQuantity: number | null;
+  category?: PrismaCategory;
+};
+
+type PrismaCategory = {
+  id: string;
+  name: string;
+  slug: string;
+};
 
 // Conversion du type de la base de données au type de l'application
 export const mapProductFromDB = (product: PrismaProduct & { category?: PrismaCategory }): Product => ({

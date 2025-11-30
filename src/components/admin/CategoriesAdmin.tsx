@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Pencil, Save, Loader2, Plus, Trash2 } from "lucide-react";
 import { getAllCategories, saveCategory, deleteCategory } from "@/services/productService";
-import { checkTableExists } from "@/lib/prisma";
+import { checkTableExists } from "@/lib/api";
 import ActionButton from "./ActionButton";
 import AdminCard from "./AdminCard";
 
