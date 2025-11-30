@@ -19,5 +19,5 @@ services:
 
 networks:
   kbnet:
-    external:
-      name: kbnet
+    external: true
+    name: kbnet
