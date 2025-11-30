@@ -58,6 +58,8 @@ jobs:
             git fetch origin
             git checkout dev
             git pull origin dev
+            npm ci
+            npx prisma generate
             chmod +x deploy/remote-deploy.sh
             # run remote deploy script (attaches existing postgres container if provided)
             ./deploy/remote-deploy.sh dev --use-existing-db ${POSTGRES_CONTAINER:-postgres_db}
