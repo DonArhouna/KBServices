@@ -39,7 +39,7 @@ services:
   frontend:
     build:
       context: ..
-      dockerfile: docker/Dockerfile.frontend
+      dockerfile: docker/Dockerfile.frontend.minimal
     restart: always
     ports:
       - "80:80"

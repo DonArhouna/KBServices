@@ -58,9 +58,17 @@ jobs:
             git fetch origin
             git checkout dev
             git pull origin dev
-            # Use complete frontend rebuild
-            chmod +x rebuild-frontend.sh
-            ./rebuild-frontend.sh
+            
+            # Force complete Docker cleanup
+            echo "=== Stopping all containers ==="
+            docker stop $(docker ps -aq) || true
+            echo "=== Removing all containers ==="
+            docker rm $(docker ps -aq) || true
+            echo "=== Removing all images ==="
+            docker rmi $(docker images -q) --force || true
+            echo "=== Pruning Docker system ==="
+            docker system prune -af --volumes || true
+            
             chmod +x deploy/remote-deploy.sh
             # run remote deploy script (attaches existing postgres container if provided)
             ./deploy/remote-deploy.sh dev --use-existing-db ${POSTGRES_CONTAINER:-postgres_db}

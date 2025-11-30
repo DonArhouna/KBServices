@@ -1,0 +1,62 @@
+# Dockerfile frontend minimal sans Prisma
+FROM node:20-alpine AS build
+WORKDIR /app
+
+# Créer un package.json minimal
+RUN echo '{\
+  "name": "kbs-frontend",\
+  "private": true,\
+  "version": "0.0.0",\
+  "type": "module",\
+  "scripts": {\
+    "build": "vite build"\
+  },\
+  "dependencies": {\
+    "react": "^18.3.1",\
+    "react-dom": "^18.3.1"\
+  },\
+  "devDependencies": {\
+    "@vitejs/plugin-react-swc": "^3.5.0",\
+    "vite": "^5.4.1"\
+  }\
+}' > package.json
+
+# Installer les dépendances
+RUN npm install
+
+# Créer vite.config.js minimal
+RUN echo 'import { defineConfig } from "vite";\
+import react from "@vitejs/plugin-react-swc";\
+export default defineConfig({\
+  plugins: [react()],\
+  build: { outDir: "dist" }\
+});' > vite.config.js
+
+# Créer index.html
+RUN echo '<!DOCTYPE html>\
+<html><head><title>KB&S</title></head>\
+<body><div id="root"></div>\
+<script type="module" src="/src/main.jsx"></script>\
+</body></html>' > index.html
+
+# Créer src/main.jsx
+RUN mkdir src && echo 'import React from "react";\
+import ReactDOM from "react-dom/client";\
+function App() {\
+  return React.createElement("div", {style: {padding: "20px"}},\
+    React.createElement("h1", null, "KB&S - Site en maintenance"),\
+    React.createElement("p", null, "Le site sera bientôt disponible."));\
+}\
+ReactDOM.createRoot(document.getElementById("root")).render(\
+  React.createElement(React.StrictMode, null, React.createElement(App)));\
+' > src/main.jsx
+
+# Build
+RUN npm run build
+
+# Production stage
+FROM nginx:stable-alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY docker/nginx.single.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
