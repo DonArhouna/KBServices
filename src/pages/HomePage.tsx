@@ -195,7 +195,7 @@ const HomePage = () => {
           <HeroCarousel
             images={content.heroImages}
           >
-            <div className="flex flex-col sm:flex-row gap-4 mt-6">
+            <div className="flex flex-col sm:flex-row gap-4 mt-12">
               <Button 
                 onClick={() => navigate("/products")}
                 size="lg"
@@ -208,7 +208,7 @@ const HomePage = () => {
                 onClick={() => navigate("/about")}
                 variant="outline"
                 size="lg"
-                className="rounded-2xl bg-white/95 hover:bg-white border-2 border-white text-kbs-brown px-10 py-4 shadow-2xl transition-all duration-300 hover:shadow-3xl hover:scale-105 font-semibold backdrop-blur-sm"
+                className="rounded-2xl bg-white/95 hover:bg-white/95 border-2 border-white text-kbs-brown hover:text-kbs-brown px-10 py-4 shadow-2xl transition-all duration-300 hover:shadow-3xl hover:scale-105 font-semibold backdrop-blur-sm"
               >
                 En savoir plus
               </Button>
