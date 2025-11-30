@@ -58,9 +58,9 @@ jobs:
             git fetch origin
             git checkout dev
             git pull origin dev
-            # Use clean build script
-            chmod +x clean-build.sh
-            ./clean-build.sh
+            # Use complete frontend rebuild
+            chmod +x rebuild-frontend.sh
+            ./rebuild-frontend.sh
             chmod +x deploy/remote-deploy.sh
             # run remote deploy script (attaches existing postgres container if provided)
             ./deploy/remote-deploy.sh dev --use-existing-db ${POSTGRES_CONTAINER:-postgres_db}
