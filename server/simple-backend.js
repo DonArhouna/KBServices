@@ -1,0 +1,98 @@
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+app.use('/ImagesSite', express.static(path.join(__dirname, '../ImagesSite')));
+
+// Stockage en mémoire
+let products = [];
+let categories = [];
+let nextId = 1;
+
+// Route de santé
+app.get('/api/health/tables', (req, res) => {
+  console.log('✅ Health check');
+  res.json({
+    categories: { exists: true, count: categories.length },
+    products: { exists: true, count: products.length },
+    stock_movements: { exists: true, count: 0 },
+    stock_alerts: { exists: true, count: 0 },
+    orders: { exists: true, count: 0 },
+    order_items: { exists: true, count: 0 },
+    site_content: { exists: true, count: 0 },
+    invoices: { exists: true, count: 0 },
+    invoice_items: { exists: true, count: 0 },
+    quotes: { exists: true, count: 0 },
+    quote_items: { exists: true, count: 0 },
+    services: { exists: true, count: 0 }
+  });
+});
+
+// Routes produits
+app.get('/api/products', (req, res) => {
+  console.log('📦 GET products:', products.length);
+  res.json(products);
+});
+
+app.post('/api/products', (req, res) => {
+  const product = { ...req.body, id: 'prod-' + nextId++ };
+  products.push(product);
+  console.log('➕ POST product:', product.name);
+  res.json(product);
+});
+
+app.delete('/api/products/:id', (req, res) => {
+  const id = req.params.id;
+  const index = products.findIndex(p => p.id === id);
+  if (index !== -1) {
+    const deleted = products.splice(index, 1)[0];
+    console.log('🗑️ DELETE product:', deleted.name);
+    res.json({ success: true, deleted });
+  } else {
+    console.log('❌ Product not found:', id);
+    res.status(404).json({ error: 'Product not found' });
+  }
+});
+
+// Routes catégories
+app.get('/api/categories', (req, res) => {
+  console.log('📂 GET categories:', categories.length);
+  res.json(categories);
+});
+
+app.post('/api/categories', (req, res) => {
+  const category = { ...req.body, id: 'cat-' + nextId++ };
+  categories.push(category);
+  console.log('➕ POST category:', category.name);
+  res.json(category);
+});
+
+// Autres routes
+app.get('/api/site-content', (req, res) => { 
+  res.json({}); 
+});
+
+app.post('/api/site-content', (req, res) => { 
+  res.json({ success: true }); 
+});
+
+// Debug
+app.use('*', (req, res) => {
+  console.log('❓ Unknown route:', req.method, req.originalUrl);
+  res.status(404).json({ error: 'Route not found', path: req.originalUrl });
+});
+
+const PORT = 3001;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Backend running on port ${PORT}`);
+  console.log('📋 Available routes:');
+  console.log('  GET    /api/health/tables');
+  console.log('  GET    /api/products');
+  console.log('  POST   /api/products');
+  console.log('  DELETE /api/products/:id');
+  console.log('  GET    /api/categories');
+  console.log('  POST   /api/categories');
+});
