@@ -195,7 +195,7 @@ const HomePage = () => {
           <HeroCarousel
             images={content.heroImages}
           >
-            <div className="flex flex-col sm:flex-row gap-4 mt-12">
+            <div className="flex flex-col sm:flex-row gap-4 mt-20">
               <Button 
                 onClick={() => navigate("/products")}
                 size="lg"
