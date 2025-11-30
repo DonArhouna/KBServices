@@ -24,14 +24,16 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      '@prisma/client': false,
+      '.prisma/client': false
     },
   },
   optimizeDeps: {
-    exclude: ['pg', '@prisma/client']
+    exclude: ['pg', '@prisma/client', '.prisma/client']
   },
   build: {
     rollupOptions: {
-      external: ['@prisma/client']
+      external: ['@prisma/client', '.prisma/client']
     }
   },
   define: {

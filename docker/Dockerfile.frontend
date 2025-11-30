@@ -8,10 +8,6 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# Copy Prisma schema first
-COPY prisma ./prisma
-RUN npx prisma generate
-
 # Copy frontend files only
 COPY src ./src
 COPY public ./public
