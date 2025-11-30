@@ -1,0 +1,25 @@
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backend.fixed2
+    restart: always
+    ports:
+      - "3001:3001"
+    networks:
+      - kbnet
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.frontend.minimal
+    restart: always
+    ports:
+      - "80:80"
+    networks:
+      - kbnet
+
+networks:
+  kbnet:
+    external: true
+    name: kbnet

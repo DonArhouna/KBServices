@@ -1,0 +1,49 @@
+# Backend simple corrigé
+FROM node:20-alpine
+WORKDIR /app
+
+# Installer les dépendances de base
+RUN apk add --no-cache netcat-openbsd
+
+# Créer un package.json CommonJS
+RUN echo '{\
+  "name": "simple-backend",\
+  "version": "1.0.0",\
+  "main": "server.js",\
+  "dependencies": {\
+    "express": "^4.18.2",\
+    "cors": "^2.8.5"\
+  }\
+}' > package.json
+
+# Installer les dépendances
+RUN npm install
+
+# Créer le serveur simple
+RUN echo 'const express = require("express");\
+const cors = require("cors");\
+const path = require("path");\
+const app = express();\
+app.use(cors());\
+app.use(express.json());\
+app.use("/ImagesSite", express.static(path.join(__dirname, "ImagesSite")));\
+app.get("/api/health/tables", (req, res) => {\
+  res.json({ status: "ok", message: "Backend running without database" });\
+});\
+app.get("/api/products", (req, res) => {\
+  res.json([]);\
+});\
+app.get("/api/categories", (req, res) => {\
+  res.json([]);\
+});\
+app.listen(3001, "0.0.0.0", () => {\
+  console.log("Backend running on port 3001");\
+});' > server.js
+
+# Copier les images
+COPY ImagesSite ./ImagesSite
+
+ENV NODE_ENV=production
+EXPOSE 3001
+
+CMD ["node", "server.js"]
