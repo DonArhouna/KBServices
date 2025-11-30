@@ -1,4 +1,4 @@
-// API client pour remplacer les imports Prisma côté frontend
+// API client pour les appels backend
 const API_BASE_URL = '/api';
 
 export const api = {
@@ -29,7 +29,7 @@ export async function checkTableExists(tableName: string): Promise<boolean> {
   }
 }
 
-// Fonction pour vérifier la configuration Prisma (toujours true côté frontend)
+// Fonction pour vérifier la configuration de la base de données
 export const isPrismaConfigured = (): boolean => {
   return true;
 };

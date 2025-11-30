@@ -1,5 +1,5 @@
-// Types locaux pour remplacer Prisma
-type PrismaProduct = {
+// Types locaux pour l'API
+type DBProduct = {
   id: string;
   name: string;
   description: string | null;
@@ -7,17 +7,17 @@ type PrismaProduct = {
   imageUrl: string | null;
   categoryId: string | null;
   stockQuantity: number | null;
-  category?: PrismaCategory;
+  category?: DBCategory;
 };
 
-type PrismaCategory = {
+type DBCategory = {
   id: string;
   name: string;
   slug: string;
 };
 
 // Conversion du type de la base de données au type de l'application
-export const mapProductFromDB = (product: PrismaProduct & { category?: PrismaCategory }): Product => ({
+export const mapProductFromDB = (product: DBProduct & { category?: DBCategory }): Product => ({
   id: product.id,
   name: product.name,
   description: product.description || '',
@@ -115,7 +115,7 @@ export async function deleteProduct(productId: string): Promise<boolean> {
 }
 
 // Récupérer toutes les catégories
-export async function getAllCategories(): Promise<PrismaCategory[]> {
+export async function getAllCategories(): Promise<DBCategory[]> {
   try {
     const response = await fetch(`${API_BASE_URL}/categories`);
     if (!response.ok) {
@@ -129,7 +129,7 @@ export async function getAllCategories(): Promise<PrismaCategory[]> {
 }
 
 // Ajouter ou mettre à jour une catégorie
-export async function saveCategory(category: { id?: string; name: string; slug: string }): Promise<PrismaCategory | null> {
+export async function saveCategory(category: { id?: string; name: string; slug: string }): Promise<DBCategory | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/categories`, {
       method: 'POST',
