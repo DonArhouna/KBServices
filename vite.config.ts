@@ -24,8 +24,8 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      '@prisma/client': false,
-      '.prisma/client': false
+      '@prisma/client': path.resolve(__dirname, 'src/lib/prisma-stub.js'),
+      '.prisma/client': path.resolve(__dirname, 'src/lib/prisma-stub.js')
     },
   },
   optimizeDeps: {
