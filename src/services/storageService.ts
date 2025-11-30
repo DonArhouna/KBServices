@@ -1,6 +1,10 @@
 
-import { supabase } from '@/lib/supabase';
-import { isLocalDevelopment } from '@/lib/supabase-local';
+import { supabase } from '@/integrations/supabase/client';
+
+// Fonction pour détecter l'environnement local
+const isLocalDevelopment = () => {
+  return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+};
 
 // Fonction pour convertir base64 en File
 export const base64ToFile = async (base64String: string, filename: string): Promise<File | null> => {

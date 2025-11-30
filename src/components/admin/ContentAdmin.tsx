@@ -4,7 +4,10 @@ import { Loader2 } from "lucide-react";
 import { getSiteContentOptimized, updateSiteContent, getDefaultContent, SiteContent } from "@/services/contentService";
 import { uploadImage as uploadImageToServer } from "@/services/imageService";
 import { base64ToFile } from "@/services/storageService";
-import { isLocalDevelopment } from "@/lib/supabase-local";
+// Fonction pour détecter l'environnement local
+const isLocalDevelopment = () => {
+  return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+};
 import ContentAccordion from "./ContentAccordion";
 import SaveButton from "./SaveButton";
 import AdminCard from "./AdminCard";
