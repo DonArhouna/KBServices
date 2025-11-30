@@ -17,7 +17,12 @@ COPY tsconfig*.json .
 COPY tailwind.config.ts .
 COPY postcss.config.js .
 COPY components.json .
-RUN npm run build
+
+# Debug: List files before build
+RUN echo "=== Files before build ===" && ls -la
+RUN echo "=== Package.json content ===" && cat package.json
+RUN echo "=== Starting build ===" && npm run build
+RUN echo "=== Build completed, checking dist ===" && ls -la dist/
 
 # Production stage: serve with nginx
 FROM nginx:stable-alpine

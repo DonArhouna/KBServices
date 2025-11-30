@@ -61,3 +61,10 @@ jobs:
             chmod +x deploy/remote-deploy.sh
             # run remote deploy script (attaches existing postgres container if provided)
             ./deploy/remote-deploy.sh dev --use-existing-db ${POSTGRES_CONTAINER:-postgres_db}
+            # Check container status and logs for debugging
+            echo "=== Container Status ==="
+            docker ps
+            echo "=== Frontend Logs ==="
+            docker logs $(docker ps -q --filter "name=frontend") --tail 50 || true
+            echo "=== Backend Logs ==="
+            docker logs $(docker ps -q --filter "name=backend") --tail 50 || true
