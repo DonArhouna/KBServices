@@ -58,11 +58,9 @@ jobs:
             git fetch origin
             git checkout dev
             git pull origin dev
-            # Clean everything to force fresh build
-            rm -rf node_modules dist .next
-            rm -rf node_modules/.prisma
-            find . -name "*.prisma" -not -path "./prisma/*" -delete || true
-            npm cache clean --force
+            # Use clean build script
+            chmod +x clean-build.sh
+            ./clean-build.sh
             chmod +x deploy/remote-deploy.sh
             # run remote deploy script (attaches existing postgres container if provided)
             ./deploy/remote-deploy.sh dev --use-existing-db ${POSTGRES_CONTAINER:-postgres_db}
