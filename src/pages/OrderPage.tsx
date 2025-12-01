@@ -81,7 +81,7 @@ const OrderPage = () => {
 
     try {
       console.log('Envoi de la commande WhatsApp via serveur principal...');
-      const response = await fetch('http://localhost:3001/api/send-whatsapp', {
+      const response = await fetch('/api/send-whatsapp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

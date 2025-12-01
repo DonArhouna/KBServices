@@ -6,7 +6,7 @@ set -euo pipefail
 # WARNING: This script writes .env with placeholders - do not commit secrets to git.
 
 # Config
-REPO_DIR="/home/rhone/KBServices/KBS"
+REPO_DIR="/home/rhone/KBServices"
 DB_USER="kbs_user"
 DB_PASS="StrongPassword"
 DB_HOST="127.0.0.1"

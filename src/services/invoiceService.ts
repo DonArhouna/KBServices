@@ -37,7 +37,7 @@ export const generateInvoiceNumber = (): string => {
 };
 
 // Base URL pour les appels API
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = '/api';
 
 // Récupérer toutes les factures avec leurs articles
 export const getInvoices = async (): Promise<InvoiceWithItems[]> => {

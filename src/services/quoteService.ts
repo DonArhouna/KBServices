@@ -73,7 +73,7 @@ export interface CreateQuoteData {
 
 // Base URL pour les appels API
 // Changer l'URL de base pour pointer vers le port 3001
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = '/api';
 
 // Generate quote number
 export const generateQuoteNumber = (): string => {

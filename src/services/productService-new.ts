@@ -41,7 +41,7 @@ export type Product = {
 };
 
 // URL de base de l'API
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = '/api';
 
 // Récupérer tous les produits
 export async function getAllProducts(): Promise<Product[]> {

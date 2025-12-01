@@ -3,7 +3,7 @@
  * Gère l'upload, la suppression et la récupération des images
  */
 
-const API_BASE = 'http://localhost:3001';
+const API_BASE = '/api';
 
 /**
  * Upload une image vers le serveur

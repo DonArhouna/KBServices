@@ -10,7 +10,7 @@ export type SiteContentDB = {
   updated_at?: string;
 };
 
-const API_BASE = 'http://localhost:3001';
+const API_BASE = '/api';
 
 // Type pour le contenu du site sur l'interface utilisateur
 export type SiteContent = {
